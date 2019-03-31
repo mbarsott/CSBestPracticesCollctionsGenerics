@@ -24,9 +24,9 @@ namespace Acme.Biz
         /// <param name="deliverBy">Requested delivery date.</param>
         /// <param name="instructions">Delivery instructions.</param>
         /// <returns></returns>
-        public OperationResult PlaceOrder(Product product, int quantity,
-                                            DateTimeOffset? deliverBy = null,
-                                            string instructions = "standard delivery")
+        public OperationResult<bool> PlaceOrder(Product product, int quantity,
+            DateTimeOffset? deliverBy = null,
+            string instructions = "standard delivery")
         {
             if (product == null)
                 throw new ArgumentNullException(nameof(product));
@@ -38,30 +38,33 @@ namespace Acme.Biz
             var success = false;
 
             var orderTextBuilder = new StringBuilder("Order from Acme, Inc" +
-                            System.Environment.NewLine +
-                            "Product: " + product.ProductName +
-                            System.Environment.NewLine +
-                            "Quantity: " + quantity);
+                                                     System.Environment.NewLine +
+                                                     "Product: " + product.ProductName +
+                                                     System.Environment.NewLine +
+                                                     "Quantity: " + quantity);
             if (deliverBy.HasValue)
             {
-                orderTextBuilder.Append( System.Environment.NewLine +
-                            "Deliver By: " + deliverBy.Value.ToString("d"));
+                orderTextBuilder.Append(System.Environment.NewLine +
+                                        "Deliver By: " + deliverBy.Value.ToString("d"));
             }
+
             if (!String.IsNullOrWhiteSpace(instructions))
             {
-                orderTextBuilder.Append( System.Environment.NewLine +
-                            "Instructions: " + instructions);
+                orderTextBuilder.Append(System.Environment.NewLine +
+                                        "Instructions: " + instructions);
             }
+
             var orderText = orderTextBuilder.ToString();
 
             var emailService = new EmailService();
             var confirmation = emailService.SendMessage("New Order", orderText,
-                                                                     this.Email);
+                this.Email);
             if (confirmation.StartsWith("Message sent:"))
             {
                 success = true;
             }
-            var operationResult = new OperationResult(success, orderText);
+
+            var operationResult = new OperationResult<bool>(success, orderText);
             return operationResult;
         }
 
@@ -80,8 +83,8 @@ namespace Acme.Biz
             var emailService = new EmailService();
             var subject = ("Hello " + this.CompanyName).Trim();
             var confirmation = emailService.SendMessage(subject,
-                                                        message,
-                                                        this.Email);
+                message,
+                this.Email);
             return confirmation;
         }
     }
