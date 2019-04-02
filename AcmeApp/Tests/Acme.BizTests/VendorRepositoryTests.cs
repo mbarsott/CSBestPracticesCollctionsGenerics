@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Acme.Biz;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Acme.Biz.Tests
 {
@@ -40,6 +42,21 @@ namespace Acme.Biz.Tests
             var actual = repository.RetrieveValue<Vendor>("Select ...", vendor);
             //Assert
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void RetrieveTest()
+        {
+            //Arrange
+            var repository = new VendorRepository();
+            var expected = new List<Vendor>();
+            expected.Add(new Vendor() {VendorId = 1, CompanyName = "ABC Corp", Email = "abc@abc.com"});
+            expected.Add(new Vendor() {VendorId = 2, CompanyName = "XYZ Inc", Email = "xyz@xyz.com"});
+            //Act
+            var actual = repository.Retrieve();
+
+            //Assert
+            CollectionAssert.AreEqual(expected, actual);
         }
     }
 }
