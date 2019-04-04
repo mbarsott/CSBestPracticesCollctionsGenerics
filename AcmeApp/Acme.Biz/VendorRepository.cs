@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Acme.Biz
 {
@@ -29,11 +30,31 @@ namespace Acme.Biz
             return vendor;
         }
 
+//        /// <summary>
+//        /// Retrieves all of the approved vendors.
+//        /// </summary>
+//        /// <returns></returns>
+//        public Vendor[] RetrieveArray()
+//        {
+//            var vendors = new Vendor[2]
+//            {
+//                new Vendor()
+//                {
+//                    VendorId = 5, CompanyName = "ABC Corp", Email = "abc@abc.com"
+//                },
+//                new Vendor()
+//                {
+//                    VendorId = 8, CompanyName = "XYZ Inc", Email = "xyz@xyz.com"
+//                }
+//            };
+//            return vendors;
+//        }
+
         /// <summary>
         /// Retrieves this instance.
         /// </summary>
         /// <returns></returns>
-        public List<Vendor> Retrieve()
+        public IEnumerable<Vendor> Retrieve()
         {
             if (vendors == null)
             {
@@ -52,41 +73,57 @@ namespace Acme.Biz
             return vendors;
         }
 
-        public Dictionary<string, Vendor> RetrieveWithKeys()
+        /// <summary>
+        /// Retrieves all of the approved vendors, one at a time
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Vendor> RetrieveWithIterator()
         {
-            var vendors = new Dictionary<string, Vendor>()
+            // Get the data from the database
+            this.Retrieve();
+
+            foreach (var vendor in vendors)
             {
-                {"ABC Corp", new Vendor() {VendorId = 5, CompanyName = "ABC Corp", Email = "abc@abc.com"}},
-                {"XYZ Inc", new Vendor() {VendorId = 8, CompanyName = "XYZ Inc", Email = "xyz@xyz.com"}}
-            };
-            foreach (var element in vendors)
-            {
-                var vendor = element.Value;
-                var key = element.Key; 
-                Console.WriteLine($"Key: {key} Value: {vendor}");
+                Console.WriteLine($"Vendor Id: {vendor.VendorId}");
+                yield return vendor;
             }
-//            foreach (var vendor in vendors.Values)
-//            {
-//                Console.WriteLine(vendor);
-//            }
-//            foreach (var companyName in vendors.Keys)
-//            {
-//                Console.WriteLine(companyName);
-//                Console.WriteLine(vendors[companyName]);
-//            }
-//            Console.WriteLine(vendors["XYZ Inc"]);
-//            if (vendors.ContainsKey("XYZ"))
-//            {
-//                Console.WriteLine(vendors["XYX"]);
-//            }
-//
-//            Vendor vendor;
-//            if (vendors.TryGetValue("XYZ", out vendor))
-//            {
-//                Console.WriteLine(vendor);
-//            }
-            return vendors;
         }
+
+//        public Dictionary<string, Vendor> RetrieveWithKeys()
+//        {
+//            var vendors = new Dictionary<string, Vendor>()
+//            {
+//                {"ABC Corp", new Vendor() {VendorId = 5, CompanyName = "ABC Corp", Email = "abc@abc.com"}},
+//                {"XYZ Inc", new Vendor() {VendorId = 8, CompanyName = "XYZ Inc", Email = "xyz@xyz.com"}}
+//            };
+//            foreach (var element in vendors)
+//            {
+//                var vendor = element.Value;
+//                var key = element.Key; 
+//                Console.WriteLine($"Key: {key} Value: {vendor}");
+//            }
+////            foreach (var vendor in vendors.Values)
+////            {
+////                Console.WriteLine(vendor);
+////            }
+////            foreach (var companyName in vendors.Keys)
+////            {
+////                Console.WriteLine(companyName);
+////                Console.WriteLine(vendors[companyName]);
+////            }
+////            Console.WriteLine(vendors["XYZ Inc"]);
+////            if (vendors.ContainsKey("XYZ"))
+////            {
+////                Console.WriteLine(vendors["XYX"]);
+////            }
+////
+////            Vendor vendor;
+////            if (vendors.TryGetValue("XYZ", out vendor))
+////            {
+////                Console.WriteLine(vendor);
+////            }
+//            return vendors;
+//        }
 
         public T RetrieveValue<T>(string sql, T defaultValue)
         {

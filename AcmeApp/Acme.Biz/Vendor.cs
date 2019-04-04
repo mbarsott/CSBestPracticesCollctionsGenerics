@@ -1,14 +1,12 @@
-﻿using Acme.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Acme.Common;
 
 namespace Acme.Biz
 {
     /// <summary>
-    /// Manages the approved vendors from whom Acme purchases our inventory.
+    ///     Manages the approved vendors from whom Acme purchases our inventory.
     /// </summary>
     public class Vendor
     {
@@ -17,7 +15,7 @@ namespace Acme.Biz
         public string Email { get; set; }
 
         /// <summary>
-        /// Sends a product order to the vendor.
+        ///     Sends a product order to the vendor.
         /// </summary>
         /// <param name="product">Product to order.</param>
         /// <param name="quantity">Quantity of the product to order.</param>
@@ -38,31 +36,24 @@ namespace Acme.Biz
             var success = false;
 
             var orderTextBuilder = new StringBuilder("Order from Acme, Inc" +
-                                                     System.Environment.NewLine +
+                                                     Environment.NewLine +
                                                      "Product: " + product.ProductName +
-                                                     System.Environment.NewLine +
+                                                     Environment.NewLine +
                                                      "Quantity: " + quantity);
             if (deliverBy.HasValue)
-            {
-                orderTextBuilder.Append(System.Environment.NewLine +
+                orderTextBuilder.Append(Environment.NewLine +
                                         "Deliver By: " + deliverBy.Value.ToString("d"));
-            }
 
-            if (!String.IsNullOrWhiteSpace(instructions))
-            {
-                orderTextBuilder.Append(System.Environment.NewLine +
+            if (!string.IsNullOrWhiteSpace(instructions))
+                orderTextBuilder.Append(Environment.NewLine +
                                         "Instructions: " + instructions);
-            }
 
             var orderText = orderTextBuilder.ToString();
 
             var emailService = new EmailService();
             var confirmation = emailService.SendMessage("New Order", orderText,
-                this.Email);
-            if (confirmation.StartsWith("Message sent:"))
-            {
-                success = true;
-            }
+                Email);
+            if (confirmation.StartsWith("Message sent:")) success = true;
 
             var operationResult = new OperationResult<bool>(success, orderText);
             return operationResult;
@@ -70,27 +61,22 @@ namespace Acme.Biz
 
         public override string ToString()
         {
-            return $"Vendor: {this.CompanyName} ({this.VendorId})";
+            return $"Vendor: {CompanyName} ({VendorId})";
         }
 
         /// <summary>
-        /// Overriden to support comparison
+        ///     Overriden to support comparison
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if (obj == null || this.GetType() != obj.GetType())
-            {
-                return false;
-            }
+            if (obj == null || GetType() != obj.GetType()) return false;
 
-            Vendor compareVendor = obj as Vendor;
-            if (compareVendor != null && this.VendorId == compareVendor.VendorId &&
-                this.CompanyName == compareVendor.CompanyName && this.Email == compareVendor.Email)
-            {
+            var compareVendor = obj as Vendor;
+            if (compareVendor != null && VendorId == compareVendor.VendorId &&
+                CompanyName == compareVendor.CompanyName && Email == compareVendor.Email)
                 return true;
-            }
 
             return base.Equals(obj);
         }
@@ -101,16 +87,37 @@ namespace Acme.Biz
         }
 
         /// <summary>
-        /// Sends an email to welcome a new vendor.
+        /// Sends an email to a set of vendors
+        /// </summary>
+        /// <param name="vendors">Collection of vendors.</param>
+        /// <param name="message">Message to send.</param>
+        /// <returns></returns>
+        public static List<string> SendEmail(ICollection<Vendor> vendors, string message)
+        {
+            var confirmations = new List<string>();
+            var emailService = new EmailService();
+            Console.WriteLine(vendors.Count);
+            foreach (var vendor in vendors)
+            {
+                var subject = "Important message for: " + vendor.CompanyName;
+                var confirmation = emailService.SendMessage(subject, message, vendor.Email);
+                confirmations.Add(confirmation);
+            }
+
+            return confirmations;
+        }
+
+        /// <summary>
+        ///     Sends an email to welcome a new vendor.
         /// </summary>
         /// <returns></returns>
         public string SendWelcomeEmail(string message)
         {
             var emailService = new EmailService();
-            var subject = ("Hello " + this.CompanyName).Trim();
+            var subject = ("Hello " + CompanyName).Trim();
             var confirmation = emailService.SendMessage(subject,
                 message,
-                this.Email);
+                Email);
             return confirmation;
         }
     }
