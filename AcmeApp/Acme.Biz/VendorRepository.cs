@@ -30,26 +30,6 @@ namespace Acme.Biz
             return vendor;
         }
 
-//        /// <summary>
-//        /// Retrieves all of the approved vendors.
-//        /// </summary>
-//        /// <returns></returns>
-//        public Vendor[] RetrieveArray()
-//        {
-//            var vendors = new Vendor[2]
-//            {
-//                new Vendor()
-//                {
-//                    VendorId = 5, CompanyName = "ABC Corp", Email = "abc@abc.com"
-//                },
-//                new Vendor()
-//                {
-//                    VendorId = 8, CompanyName = "XYZ Inc", Email = "xyz@xyz.com"
-//                }
-//            };
-//            return vendors;
-//        }
-
         /// <summary>
         /// Retrieves this instance.
         /// </summary>
@@ -73,6 +53,22 @@ namespace Acme.Biz
             return vendors;
         }
 
+        public IEnumerable<Vendor> RetrieveAll()
+        {
+            vendors = new List<Vendor>();
+            vendors.Add(new Vendor {VendorId = 1, CompanyName = "ABC Corp", Email = "abc@abc.com"});
+            vendors.Add(new Vendor {VendorId = 2, CompanyName = "XYZ Inc", Email = "xyz@xyz.com"});
+            vendors.Add(new Vendor {VendorId = 12, CompanyName = "EFG Ltd", Email = "efg@efg.com"});
+            vendors.Add(new Vendor {VendorId = 17, CompanyName = "HIJ AG", Email = "hij@hij.com"});
+            vendors.Add(new Vendor {VendorId = 22, CompanyName = "Amalgamated Toys", Email = "a@abc.com"});
+            vendors.Add(new Vendor {VendorId = 28, CompanyName = "Toy Blocks Inc", Email = "blocks@abc.com"});
+            vendors.Add(new Vendor {VendorId = 31, CompanyName = "Home Products Inc", Email = "home@abc.com"});
+            vendors.Add(new Vendor {VendorId = 35, CompanyName = "Car Toys", Email = "car@abc.com"});
+            vendors.Add(new Vendor {VendorId = 42, CompanyName = "Toys for Fun", Email = "fun@abc.com"});
+            return vendors;
+        }
+
+
         /// <summary>
         /// Retrieves all of the approved vendors, one at a time
         /// </summary>
@@ -89,41 +85,6 @@ namespace Acme.Biz
             }
         }
 
-//        public Dictionary<string, Vendor> RetrieveWithKeys()
-//        {
-//            var vendors = new Dictionary<string, Vendor>()
-//            {
-//                {"ABC Corp", new Vendor() {VendorId = 5, CompanyName = "ABC Corp", Email = "abc@abc.com"}},
-//                {"XYZ Inc", new Vendor() {VendorId = 8, CompanyName = "XYZ Inc", Email = "xyz@xyz.com"}}
-//            };
-//            foreach (var element in vendors)
-//            {
-//                var vendor = element.Value;
-//                var key = element.Key; 
-//                Console.WriteLine($"Key: {key} Value: {vendor}");
-//            }
-////            foreach (var vendor in vendors.Values)
-////            {
-////                Console.WriteLine(vendor);
-////            }
-////            foreach (var companyName in vendors.Keys)
-////            {
-////                Console.WriteLine(companyName);
-////                Console.WriteLine(vendors[companyName]);
-////            }
-////            Console.WriteLine(vendors["XYZ Inc"]);
-////            if (vendors.ContainsKey("XYZ"))
-////            {
-////                Console.WriteLine(vendors["XYX"]);
-////            }
-////
-////            Vendor vendor;
-////            if (vendors.TryGetValue("XYZ", out vendor))
-////            {
-////                Console.WriteLine(vendor);
-////            }
-//            return vendors;
-//        }
 
         public T RetrieveValue<T>(string sql, T defaultValue)
         {
