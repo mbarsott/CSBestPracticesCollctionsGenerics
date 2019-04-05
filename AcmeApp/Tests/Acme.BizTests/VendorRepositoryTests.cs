@@ -86,7 +86,7 @@ namespace Acme.Biz.Tests
         }
 
         [TestMethod]
-        public void RetrieveallTest()
+        public void RetrieveAllTest()
         {
             //Arrange
             var repository = new VendorRepository();
@@ -99,10 +99,18 @@ namespace Acme.Biz.Tests
             //Act
             var vendors = repository.RetrieveAll();
 
-            var vendorQuery = from v in vendors
-                where v.CompanyName.Contains("Toy")
-                orderby v.CompanyName
-                select v;
+//            var vendorQuery = from v in vendors
+//                where v.CompanyName.Contains("Toy")
+//                orderby v.CompanyName
+//                select v;
+
+//            var vendorQuery = vendors
+//                .Where(FilterCompanies)
+//                .OrderBy(OrderCompaniesbyName);
+
+            var vendorQuery = vendors
+                .Where(v => v.CompanyName.Contains("Toy"))
+                .OrderBy(v => v.CompanyName);
                 
             //Assert
             CollectionAssert.AreEqual(expected, vendorQuery.ToList());
@@ -117,5 +125,13 @@ namespace Acme.Biz.Tests
 //            expected.Add(new Vendor {VendorId = 35, CompanyName = "Car Toys", Email = "car@abc.com"});
 //            expected.Add(new Vendor {VendorId = 42, CompanyName = "Toys for Fun", Email = "fun@abc.com"});
         }
+
+//        private bool FilterCompanies(Vendor v)
+//        {
+//            return v.CompanyName.Contains("Toy");
+//        }
+//        private bool FilterCompanies(Vendor v) => v.CompanyName.Contains("Toy");
+
+//        private string OrderCompaniesbyName(Vendor v) => v.CompanyName;
     }
 }
